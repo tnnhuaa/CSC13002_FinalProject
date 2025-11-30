@@ -136,7 +136,10 @@ export default function Dashboard() {
         handleDrop,
         handleDragEnd,
         draggedTask,
+        getFilteredTasks,
     } = useDashboard();
+
+    const filteredTasks = getFilteredTasks();
 
     const statData = [
         {
@@ -182,12 +185,9 @@ export default function Dashboard() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white text-lg">
-                            📊
-                        </div>
                         <div>
                             <h1 className="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white">
-                                Planora Design System
+                                Planora
                             </h1>
                             <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
                                 Modern project management for productive teams
@@ -202,17 +202,6 @@ export default function Dashboard() {
                     <Plus size={16} />
                     Create Task
                 </button>
-            </div>
-
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                <span>Workspace</span>
-                <ChevronRight size={16} />
-                <span>Website Redesign</span>
-                <ChevronRight size={16} />
-                <span className="text-slate-900 dark:text-white">
-                    Design System
-                </span>
             </div>
 
             {/* Stats Cards */}
@@ -276,7 +265,7 @@ export default function Dashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* To Do Column */}
                         <div
-                            className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4 space-y-3 transition-colors"
+                            className="bg-slate-200 dark:bg-slate-700 rounded-xl p-4 space-y-3 transition-colors"
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDrop(e, "To Do")}
                             onDragEnd={handleDragEnd}
@@ -285,12 +274,12 @@ export default function Dashboard() {
                                 <h3 className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                                     To Do
                                     <span className="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs text-slate-600 dark:text-slate-400">
-                                        {tasks["To Do"].length}
+                                        {filteredTasks["To Do"].length}
                                     </span>
                                 </h3>
                             </div>
                             <div className="space-y-3">
-                                {tasks["To Do"].map((task, idx) => (
+                                {filteredTasks["To Do"].map((task, idx) => (
                                     <TaskCard
                                         key={idx}
                                         {...task}
@@ -314,7 +303,7 @@ export default function Dashboard() {
 
                         {/* In Progress Column */}
                         <div
-                            className="bg-slate-50  dark:bg-slate-700 rounded-xl p-4 space-y-3 transition-colors"
+                            className="bg-sky-100  dark:bg-blue-900 rounded-xl p-4 space-y-3 transition-colors"
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDrop(e, "In Progress")}
                             onDragEnd={handleDragEnd}
@@ -323,27 +312,30 @@ export default function Dashboard() {
                                 <h3 className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                                     In Progress
                                     <span className="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs text-slate-600 dark:text-slate-400">
-                                        {tasks["In Progress"].length}
+                                        {filteredTasks["In Progress"].length}
                                     </span>
                                 </h3>
                             </div>
                             <div className="space-y-3">
-                                {tasks["In Progress"].map((task, idx) => (
-                                    <TaskCard
-                                        key={idx}
-                                        {...task}
-                                        onDragStart={(e) =>
-                                            handleDragStart(
-                                                e,
-                                                task,
-                                                "In Progress"
-                                            )
-                                        }
-                                        isDragging={
-                                            draggedTask?.taskId === task.taskId
-                                        }
-                                    />
-                                ))}
+                                {filteredTasks["In Progress"].map(
+                                    (task, idx) => (
+                                        <TaskCard
+                                            key={idx}
+                                            {...task}
+                                            onDragStart={(e) =>
+                                                handleDragStart(
+                                                    e,
+                                                    task,
+                                                    "In Progress"
+                                                )
+                                            }
+                                            isDragging={
+                                                draggedTask?.taskId ===
+                                                task.taskId
+                                            }
+                                        />
+                                    )
+                                )}
                             </div>
                             <button
                                 onClick={() =>
@@ -358,7 +350,7 @@ export default function Dashboard() {
 
                         {/* Review Column */}
                         <div
-                            className="bg-slate-50  dark:bg-slate-700 rounded-xl p-4 space-y-3 transition-colors"
+                            className="bg-indigo-100  dark:bg-indigo-800 rounded-xl p-4 space-y-3 transition-colors"
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDrop(e, "Review")}
                             onDragEnd={handleDragEnd}
@@ -367,12 +359,12 @@ export default function Dashboard() {
                                 <h3 className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                                     Review
                                     <span className="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs text-slate-600 dark:text-slate-400">
-                                        {tasks["Review"].length}
+                                        {filteredTasks["Review"].length}
                                     </span>
                                 </h3>
                             </div>
                             <div className="space-y-3">
-                                {tasks["Review"].map((task, idx) => (
+                                {filteredTasks["Review"].map((task, idx) => (
                                     <TaskCard
                                         key={idx}
                                         {...task}
@@ -396,7 +388,7 @@ export default function Dashboard() {
 
                         {/* Done Column */}
                         <div
-                            className="bg-slate-50  dark:bg-slate-700 rounded-xl p-4 space-y-3 transition-colors"
+                            className="bg-emerald-100  dark:bg-emerald-800 rounded-xl p-4 space-y-3 transition-colors"
                             onDragOver={handleDragOver}
                             onDrop={(e) => handleDrop(e, "Done")}
                             onDragEnd={handleDragEnd}
@@ -405,12 +397,12 @@ export default function Dashboard() {
                                 <h3 className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                                     Done
                                     <span className="bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-full text-xs text-slate-600 dark:text-slate-400">
-                                        {tasks["Done"].length}
+                                        {filteredTasks["Done"].length}
                                     </span>
                                 </h3>
                             </div>
                             <div className="space-y-3">
-                                {tasks["Done"].map((task, idx) => (
+                                {filteredTasks["Done"].map((task, idx) => (
                                     <TaskCard
                                         key={idx}
                                         {...task}

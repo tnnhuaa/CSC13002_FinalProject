@@ -111,6 +111,30 @@ export const useDashboard = () => {
         setDraggedFromColumn(null);
     };
 
+    const getFilteredTasks = () => {
+        if (!searchQuery.trim()) {
+            return tasks;
+        }
+
+        const query = searchQuery.toLowerCase();
+        const filteredTasks = {};
+
+        Object.keys(tasks).forEach((column) => {
+            filteredTasks[column] = tasks[column].filter((task) => {
+                const titleMatch = task.title.toLowerCase().includes(query);
+                const taskIdMatch = task.taskId.toLowerCase().includes(query);
+                const typeMatch = task.type?.toLowerCase().includes(query);
+                const priorityMatch = task.priority
+                    ?.toLowerCase()
+                    .includes(query);
+
+                return titleMatch || taskIdMatch || typeMatch || priorityMatch;
+            });
+        });
+
+        return filteredTasks;
+    };
+
     return {
         activeTab,
         setActiveTab,
@@ -129,5 +153,6 @@ export const useDashboard = () => {
         handleDrop,
         handleDragEnd,
         draggedTask,
+        getFilteredTasks,
     };
 };
